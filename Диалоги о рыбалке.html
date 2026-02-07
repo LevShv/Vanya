@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<!-- saved from url=(0035)http://37.230.112.86/vania_vishnya/ -->
+<html lang="ru"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Диалоги о рыбалке</title>
+    <link rel="stylesheet" href="./Диалоги о рыбалке_files/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .header {
+            background: linear-gradient(to right, #2c3e50, #4a6491);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .header h1 i {
+            color: #ffd700;
+        }
+        
+        .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .friends-panel {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-bottom: 3px solid #ddd;
+        }
+        
+        .friend-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .friend-avatar.active {
+            border-color: #3498db;
+        }
+        
+        .friend-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+	.friends-label {
+	    text-align: center;
+	    font-size: 0.85rem;
+	    color: #555;
+	    padding: 8px 15px 0;
+	    background-color: #f5f5f5;
+	    font-weight: 500;
+	    border-bottom: 1px solid #ddd;
+	}
+        
+        .chat-container {
+            padding: 20px;
+            height: 400px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .message.other {
+            flex-direction: row-reverse;
+        }
+        
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .message-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .message-content {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        
+        .message.my .message-content {
+            background-color: #3498db;
+            color: white;
+            border-top-right-radius: 5px;
+        }
+        
+        .message.other .message-content {
+            background-color: #e6e6e6;
+            color: #333;
+            border-top-left-radius: 5px;
+        }
+        
+        .message-time {
+            font-size: 0.7rem;
+            margin-top: 5px;
+            opacity: 0.7;
+            text-align: right;
+        }
+        
+        .message.other .message-time {
+            text-align: left;
+        }
+        
+        .input-container {
+            display: flex;
+            padding: 15px;
+            background-color: white;
+            border-top: 1px solid #eee;
+        }
+        
+        .input-container input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .input-container input:focus {
+            border-color: #3498db;
+        }
+        
+        .input-container button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .input-container button:hover {
+            background-color: #2980b9;
+        }
+        
+        .fishing-theme {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message {
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .friend-avatar:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Полоса прокрутки */
+        .chat-container::-webkit-scrollbar {
+            width: 5px;
+        }
+        
+        .chat-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        .chat-container::-webkit-scrollbar-thumb {
+            background: #bdc3c7;
+            border-radius: 10px;
+        }
+        
+        .chat-container::-webkit-scrollbar-thumb:hover {
+            background: #95a5a6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-fish"></i> Диалоги о рыбалке</h1>
+            <p class="subtitle">Чат с Иван (Фидерная ловля)</p>
+        </div>
+        <div class="friends-label">
+	    <i class="fas fa-comments"></i> Выберите чат с другом:
+	</div>
+        <div class="friends-panel">
+            <div class="friend-avatar active" data-friend="vladimir">
+                <img src="./Диалоги о рыбалке_files/1.png" alt="Иван">
+            </div>
+            <div class="friend-avatar" data-friend="sergey">
+                <img src="./Диалоги о рыбалке_files/2.png" alt="Сергей">
+            </div>
+            <div class="friend-avatar" data-friend="alexey">
+                <img src="./Диалоги о рыбалке_files/3.png" alt="Алексей">
+            </div>
+            <div class="friend-avatar" data-friend="nikolay">
+                <img src="./Диалоги о рыбалке_files/4.png" alt="Николай">
+            </div>
+        </div>
+        
+        <div class="chat-container" id="chatContainer"><div class="message other">
+                <div class="message-avatar">
+                    <img src="./Диалоги о рыбалке_files/1.png" alt="Иван">
+                </div>
+                <div>
+                    <div class="message-content">
+                        Привет! Вчера на Волге поймал сома на 12 кг!
+                    </div>
+                    <div class="message-time">
+                        Иван, 10:30
+                    </div>
+                </div>
+            </div><div class="message my">
+                <div class="message-avatar">
+                    <img src="./Диалоги о рыбалке_files/0.png" alt="Я">
+                </div>
+                <div>
+                    <div class="message-content">
+                        Круто! На что ловил?
+                    </div>
+                    <div class="message-time">
+                        Я, 10:32
+                    </div>
+                </div>
+            </div><div class="message other">
+                <div class="message-avatar">
+                    <img src="./Диалоги о рыбалке_files/1.png" alt="Иван">
+                </div>
+                <div>
+                    <div class="message-content">
+                        На живца, мелкого карасика. Клевало ближе к вечеру.
+                    </div>
+                    <div class="message-time">
+                        Иван, 10:35
+                    </div>
+                </div>
+            </div><div class="message my">
+                <div class="message-avatar">
+                    <img src="./Диалоги о рыбалке_files/0.png" alt="Я">
+                </div>
+                <div>
+                    <div class="message-content">
+                        Завтра собираюсь на озеро, может, щуку поймаю.
+                    </div>
+                    <div class="message-time">
+                        Я, 10:40
+                    </div>
+                </div>
+            </div><div class="message other">
+                <div class="message-avatar">
+                    <img src="./Диалоги о рыбалке_files/2.png" alt="Вано">
+                </div>
+                <div>
+                    <div class="message-content">
+                        Ребята, кто на спиннинг в субботу? Нашли отличное место для щуки!
+                    </div>
+                    <div class="message-time">
+                        Вано, 11:15
+                    </div>
+                </div>
+            </div><div class="message other">
+                <div class="message-avatar">
+                    <img src="./Диалоги о рыбалке_files/3.png" alt="Ванька">
+                </div>
+                <div>
+                    <div class="message-content">
+                        Я вчера на поплавок 5 кг карпа вытянул!
+                    </div>
+                    <div class="message-time">
+                        Ванька, 12:20
+                    </div>
+                </div>
+            </div><div class="message other">
+                <div class="message-avatar">
+                    <img src="./Диалоги о рыбалке_files/4.png" alt="Вишенка">
+                </div>
+                <div>
+                    <div class="message-content">
+                        Готовлю снасти для зимней рыбалки, скоро лед встанет.
+                    </div>
+                    <div class="message-time">
+                        Вишенка, 13:45
+                    </div>
+                </div>
+            </div></div>
+        
+        <div class="input-container">
+            <input type="text" id="messageInput" placeholder="Напишите сообщение о рыбалке...">
+            <button id="sendButton">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+        
+        <div class="fishing-theme">
+            <i class="fas fa-water"></i> Рыболовный чат
+        </div>
+    </div>
+
+    <script>
+        // Данные о друзьях
+        const friends = {
+            vladimir: {
+                name: "Иван",
+                avatar: "1.png",
+                fishingStyle: "Фидерная ловля"
+            },
+            sergey: {
+                name: "Вано",
+                avatar: "2.png",
+                fishingStyle: "Спиннинг"
+            },
+            alexey: {
+                name: "Ванька",
+                avatar: "3.png",
+                fishingStyle: "Поплавочная удочка"
+            },
+            nikolay: {
+                name: "Вишенка",
+                avatar: "4.png",
+                fishingStyle: "Зимняя рыбалка"
+            }
+        };
+        
+        // Начальные сообщения о рыбалке
+        const initialMessages = [
+            {
+                friend: "vladimir",
+                text: "Привет! Вчера на Волге поймал сома на 12 кг!",
+                time: "10:30",
+                isMyMessage: false
+            },
+            {
+                friend: "me",
+                text: "Круто! На что ловил?",
+                time: "10:32",
+                isMyMessage: true
+            },
+            {
+                friend: "vladimir",
+                text: "На живца, мелкого карасика. Клевало ближе к вечеру.",
+                time: "10:35",
+                isMyMessage: false
+            },
+            {
+                friend: "me",
+                text: "Завтра собираюсь на озеро, может, щуку поймаю.",
+                time: "10:40",
+                isMyMessage: true
+            },
+            {
+                friend: "sergey",
+                text: "Ребята, кто на спиннинг в субботу? Нашли отличное место для щуки!",
+                time: "11:15",
+                isMyMessage: false
+            },
+            {
+                friend: "alexey",
+                text: "Я вчера на поплавок 5 кг карпа вытянул!",
+                time: "12:20",
+                isMyMessage: false
+            },
+            {
+                friend: "nikolay",
+                text: "Готовлю снасти для зимней рыбалки, скоро лед встанет.",
+                time: "13:45",
+                isMyMessage: false
+            }
+        ];
+       
+        // Текущий активный друг
+        let activeFriend = "vladimir";
+        
+        // DOM элементы
+        const chatContainer = document.getElementById('chatContainer');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const friendAvatars = document.querySelectorAll('.friend-avatar');
+        
+        // Фразы о рыбалке для автоматических ответов
+        const fishingPhrases = [
+            "Вчера отлично половил на воблер!",
+            "На выходных еду на рыбалку, присоединяйся!",
+            "Видел, какой карп в нашем пруду водится?",
+            "Погода для рыбалки идеальная сейчас.",
+            "Нужно новую леску купить перед сезоном.",
+            "Поймал щуку на 3 кг на блесну!",
+            "Знаешь хорошие места для ловли карася?",
+            "Завтра на рассвете идем на рыбалку.",
+            "Какая прикормка лучше работает у тебя?",
+            "Рыбалка - это не просто хобби, это стиль жизни!"
+        ];
+        
+        // Инициализация чата
+        function initChat() {
+            // Очищаем контейнер чата
+            chatContainer.innerHTML = '';
+            
+            // Добавляем начальные сообщения
+            initialMessages.forEach(msg => {
+                addMessageToChat(msg.friend, msg.text, msg.time, msg.isMyMessage);
+            });
+            
+            // Устанавливаем активного друга
+            setActiveFriend(activeFriend);
+        }
+        
+        // Добавление сообщения в чат
+        function addMessageToChat(friendId, text, time, isMyMessage = false) {
+            const friend = friends[friendId] || { name: "Неизвестный", avatar: "0.png" };
+            
+            const messageElement = document.createElement('div');
+            messageElement.className = `message ${isMyMessage ? 'my' : 'other'}`;
+            
+            const avatarImg = isMyMessage 
+                ? '0.png' 
+                : friend.avatar;
+            
+            const displayName = isMyMessage ? 'Я' : friend.name;
+            const displayTime = time || getCurrentTime();
+            
+            messageElement.innerHTML = `
+                <div class="message-avatar">
+                    <img src="${avatarImg}" alt="${displayName}">
+                </div>
+                <div>
+                    <div class="message-content">
+                        ${text}
+                    </div>
+                    <div class="message-time">
+                        ${displayName}, ${displayTime}
+                    </div>
+                </div>
+            `;
+            
+            chatContainer.appendChild(messageElement);
+            
+            // Прокручиваем вниз
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        // Установка активного друга
+        function setActiveFriend(friendId) {
+            activeFriend = friendId;
+            
+            // Обновляем аватары
+            friendAvatars.forEach(avatar => {
+                if (avatar.dataset.friend === friendId) {
+                    avatar.classList.add('active');
+                } else {
+                    avatar.classList.remove('active');
+                }
+            });
+            
+            // Обновляем заголовок
+            const headerTitle = document.querySelector('.header h1');
+            const friendName = friends[friendId].name;
+            const fishingStyle = friends[friendId].fishingStyle;
+            document.querySelector('.subtitle').textContent = `Чат с ${friendName} (${fishingStyle})`;
+        }
+        
+        // Получение текущего времени в формате ЧЧ:ММ
+        function getCurrentTime() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+        
+        // Отправка сообщения
+        function sendMessage() {
+            const text = messageInput.value.trim();
+            
+            if (text === '') return;
+            
+            // Добавляем мое сообщение
+            addMessageToChat(activeFriend, text, getCurrentTime(), true);
+            
+            // Очищаем поле ввода
+            messageInput.value = '';
+            
+            // Через секунду добавляем ответ от друга
+            setTimeout(() => {
+                const randomPhrase = fishingPhrases[Math.floor(Math.random() * fishingPhrases.length)];
+                addMessageToChat(activeFriend, randomPhrase, getCurrentTime(), false);
+            }, 1000);
+        }
+        
+        // Обработчики событий
+        sendButton.addEventListener('click', sendMessage);
+        
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // Обработчики для аватаров друзей
+        friendAvatars.forEach(avatar => {
+            avatar.addEventListener('click', () => {
+                const friendId = avatar.dataset.friend;
+                setActiveFriend(friendId);
+                
+                // Добавляем приветственное сообщение от выбранного друга
+                setTimeout(() => {
+                    const greetings = [
+                        `Привет! Как рыбалка?`,
+                        `Здравствуй! Есть новости с водоема?`,
+                        `Приветствую! Готов к обсуждению рыбалки!`,
+                        `Привет! Как твои уловы?`
+                    ];
+                    const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)];
+                    addMessageToChat(friendId, randomGreeting, getCurrentTime(), false);
+                }, 500);
+            });
+        });
+        
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', initChat);
+    </script>
+
+
+</body></html>
